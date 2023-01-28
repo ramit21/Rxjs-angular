@@ -148,7 +148,7 @@ Notice the use of this service in loading component, and further, how this compo
 service for that component: https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/app.component.html#L56
 
 4. Look at a very concise way of implementing a loader implementation: https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/loading/loading.service.ts#L17
-What wea re trying to do here is that using tap operator, trigger the loader to be on, and then using concatMap operator, switch to the observable passed in the argument 
+What we are trying to do here is that using tap operator, trigger the loader to be on, and then using concatMap operator, switch to the observable passed in the argument 
 (ie. switching from a null observable created using of(), to the passed in observable),
 so that when the passed in observable completes and stops emitting values, we can then turn the loader off using the finalize operator.
 
