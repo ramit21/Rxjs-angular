@@ -78,7 +78,8 @@ For this, use 'async' pipe which creates your subscription to the courses$ Obser
 ```
 ????
 ``` 
-
+Mostly http call code is kept in a service, and since using above way, we are not storing any state in the service, we follow 
+a pattern known as **'Stateless Observable-based services'**.
 
 ### What is a Subject?
 An RxJS Subject is a special type of Observable that allows values to be multicasted to many Observers.
