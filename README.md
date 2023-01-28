@@ -76,7 +76,8 @@ Things to note above:
 For this, use 'async' pipe which creates your subscription to the courses$ Observable:
 
 ```
-????
+<div *ngFor="let course of courses$ | async">
+  <div> {{course.description}} </div>
 ``` 
 Mostly http call code is kept in a service, and since using above way, we are not storing any state in the service, we follow 
 a pattern known as **'Stateless Observable-based services'**.
