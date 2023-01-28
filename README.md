@@ -109,7 +109,8 @@ https://rxjs.dev/api/operators/tap
 **of()**: It's a creational operator, used to create an Observable from a source.
 eg. of(1, 2, 3, 4, 5).subscribe(val => ...); 
 
-of(null) -> used to ????
+of(null) -> creates an observable which emits only 1 null value. Can be used with tap operator to trigger some operation, and concatMap to switch to another observable
+once operation specified in tap has been performed (see pt. 4 below)
 
 EMPTY vs of(null): https://lookout.dev/rules/difference-between-empty-and-of-null-from-rxjs
 
@@ -151,5 +152,9 @@ What wea re trying to do here is that using tap operator, trigger the loader to 
 (ie. switching from a null observable created using of(), to the passed in observable),
 so that when the passed in observable completes and stops emitting values, we can then turn the loader off using the finalize operator.
 
+5. Error handling: https://github.com/ramit21/Rxjs-angular/blob/00c59ac4da0f7dd437b87cc690d38cd068c917ae/src/app/services/courses.store.ts#L33
+
+thowError operator returns a new observable than the original observable, ie  switches from original observable which has errored out to a new observable,
+and this new observable which completes immediately, so that the observable emit chain gets broken.
 
 
