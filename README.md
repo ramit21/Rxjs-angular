@@ -82,6 +82,8 @@ For this, use **async** pipe which creates your subscription to the courses$ Obs
 Mostly http call code is kept in a service, and since using above way, we are not storing any state in the service, we follow 
 a pattern known as **'Stateless Observable-based services'**.
 
+If you do not make any async subscription, no HTTP call will be made, as Angular Observables are lazy by nature. 
+
 ### What is a Subject?
 An RxJS Subject is a special type of Observable that allows values to be multicasted to many Observers.
 While plain Observables are unicast (each subscribed Observer owns an independent execution of the Observable), subjects are multicast.
@@ -115,5 +117,39 @@ EMPTY vs of(null): https://lookout.dev/rules/difference-between-empty-and-of-nul
  multiple subscribers. For eg. an HTTP call - if multiple subscribers are listening the an observable being returned from the http call, shareReplay will ensure that
  only 1 HTTP call is made, and all observers get the same emitted value. Otherwise, http call will get executed as many times as the no. of subscribers.
  
+**finalize()**: Execute a callback function when the observable completes.
+ 
+**concatMap()**: Switches from emitting values of one observable to another one, but only when first observable completes.
+
+**mergeMap()**: Switches from emitting values of one observable to another one immediately. 
+
+More on concatMap, mergeMap, exhaustMap, and switchMap: https://blog.angular-university.io/rxjs-higher-order-mapping/
  
 ### Things to note in this POC code base
+
+1. Smart vs Presentational (dumb) component: See Home component HTML: https://github.com/ramit21/Rxjs-angular/blob/main/src/app/home/home.component.html
+It is a smart component, as it is dealing with data. But delegates the display presentation responsibility to courses-card-list component, which does not have 
+any information about the source data.
+
+2. Notice how we filter to check if save call went fine, and further use tap operator to emit an event to notify about successfull save.
+https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/courses-card-list/courses-card-list.component.ts#L44
+
+3. Sharing of data between components: If the data is to be shared between parent child components, you can use EventEmitters. But if the componentsare not parent
+child, then the other option is hold the data in memory through a shared service. You can further decide on the scope of a service. For eg, if you want to hold an 
+information which which stay singleton across the application, like a logged in user, you create the service at root level. This way the service is created only 
+once at the root level. See this: https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/services/auth.store.ts#L10
+
+But if you want to hold a state which can vary across components, or in other words a service which is not a singleton at root level, instead different instances
+are required at different component level, (eg. a loader service which stores boolean flag to show/hide the loader, and different components want 
+to reuse it on their respective operations) you define the service like this https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/loading/loading.service.ts#L6
+
+Notice the use of this service in loading component, and further, how this component when specified in different htmls of other components, creates a new instance of this
+service for that component: https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/app.component.html#L56
+
+4. Look at a very concise way of implementing a loader implementation: https://github.com/ramit21/Rxjs-angular/blob/f54355bf325f3e9690798cda3304c5c3412ab590/src/app/loading/loading.service.ts#L17
+What wea re trying to do here is that using tap operator, trigger the loader to be on, and then using concatMap operator, switch to the observable passed in the argument 
+(ie. switching from a null observable created using of(), to the passed in observable),
+so that when the passed in observable completes and stops emitting values, we can then turn the loader off using the finalize operator.
+
+
+
