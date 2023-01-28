@@ -73,7 +73,7 @@ Things to note above:
 2. We specify the type of Observable being returned in http.get() call.
 3. We are not storing any mutable data in memory. courses$ is just an Observable, not a direct reference to Courses array.
 4. In the HTML if you don't have a Courses array to loop through. What you need in the html, is a subscription to courses observable.
-For this, use 'async' pipe which creates your subscription to the courses$ Observable:
+For this, use **async** pipe which creates your subscription to the courses$ Observable:
 
 ```
 <div *ngFor="let course of courses$ | async">
