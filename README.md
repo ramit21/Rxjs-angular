@@ -124,6 +124,8 @@ EMPTY vs of(null): https://lookout.dev/rules/difference-between-empty-and-of-nul
 
 **mergeMap()**: Switches from emitting values of one observable to another one immediately. 
 
+**combineLatest()**: Takes an array of observables, and returns a new observable which emits a value everytime one of the input observable emits a value.
+
 More on concatMap, mergeMap, exhaustMap, and switchMap: https://blog.angular-university.io/rxjs-higher-order-mapping/
  
 ### Things to note in this POC code base
@@ -157,4 +159,35 @@ so that when the passed in observable completes and stops emitting values, we ca
 thowError operator returns a new observable than the original observable, ie  switches from original observable which has errored out to a new observable,
 and this new observable which completes immediately, so that the observable emit chain gets broken.
 
+6. In this POC, we are saving course updates in an optimistic way, ie. assuming that save will not error out. That is why we emit the subject first for other parts of ui to reflect the save, and then make the backend call. Other approach is of course to emit values only on succesfull save.
 
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/services/courses.store.ts#L62
+
+7. Look at Authstore how logged-in/out observables are maintained in the constructor, and then in login/logout methods. Also look at how we then display either the login button, or the logout.
+
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/services/auth.store.ts#L23
+
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/app.component.html#L25
+
+We store logged in user information in browser's localstorage to survive browser refreshes.
+
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/services/auth.store.ts#L40
+
+8. **Single data Observable Pattern:** If you have multiple subscriptions to different observables on an HTML template, having them one inside another can lead to performance issues, as outer one may take time to load, and once it loads, the inner one takes its own time sequentially as well.
+
+```
+<ng-container *ng-if="(course$|async) as course">
+   <ng-container *ng-if="(lessons$|async) as lessons">
+    .....
+```
+Also note that 2 ng-ifs cannot be clubbed in a signle ng-container, hence we do need 2 ng-containers here.
+
+The solution to above performance issue is to use 'Single data Observable Pattern', and use a single observable (achieved using interface) emit a value when any of the input observables emits a value (using combineLatest() observable)
+
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/course/course.component.ts#L58
+
+And it's corresponding subscription (for both data.courses and data.lessons) in the html:
+
+https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/course/course.component.html#L7
+
+9. 
