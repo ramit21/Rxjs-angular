@@ -190,4 +190,11 @@ And it's corresponding subscription (for both data.courses and data.lessons) in 
 
 https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/course/course.component.html#L7
 
-9. 
+9. **OnPush Change Detection:** Optimised angular change detection mode, not on by default. By default, Angular checks all expressions across all components to decide weather re rendering is required or not. This is not very efficient. OnPush change detection, if turned on, says that if any of the observables being subscribed to (in the html) have emmitted a new value, then mark the field dirty and trigger re-rendering for the dirty fields only.
+
+This is done for all components in this POC, check this for an example:
+
+https://github.com/ramit21/Rxjs-angular/blob/c2d51b18ee6a8af73668a698a7365ebfa7a15952/src/app/home/home.component.ts#L11
+
+
+
