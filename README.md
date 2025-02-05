@@ -180,9 +180,9 @@ https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe
    <ng-container *ng-if="(lessons$|async) as lessons">
     .....
 ```
-Also note that 2 ng-ifs cannot be clubbed in a signle ng-container, hence we do need 2 ng-containers here.
+Also note that 2 ng-ifs cannot be clubbed in a single ng-container, hence we do need 2 ng-containers here.
 
-The solution to above performance issue is to use 'Single data Observable Pattern', and use a single observable (achieved using interface) emit a value when any of the input observables emits a value (using combineLatest() observable)
+The solution to above performance issue is to use 'Single data Observable Pattern', and use a single observable (achieved using interface) emit a value when any of the input observables emits a value (using combineLatest() observable).
 
 https://github.com/ramit21/Rxjs-angular/blob/29560c2a8a5721e37242a9d496ee56aeebe03ed1/src/app/course/course.component.ts#L58
 
